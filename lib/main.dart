@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:insta/main_page.dart';
 import 'package:insta/constants/material_color.dart';
+import 'package:insta/screens/signIn.dart';
 
 void main() => runApp(MyApp());
 
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: white,
       ),
-      home: MainPage(),
+      home: SignIn(),
     );
   }
 }

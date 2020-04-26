@@ -3,6 +3,7 @@ import 'package:insta/screens/feed_page.dart';
 import 'package:insta/screens/profile.dart';
 import 'package:insta/screens/follow.dart';
 import 'package:insta/screens/camera.dart';
+import 'package:insta/screens/search.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _MainPageState extends State<MainPage> {
 
   static List<Widget> _widgetOptions = <Widget>[
     FeedPage(),
-    Container(color: Colors.primaries[1],),
+    Search(),
     Container(color: Colors.primaries[2],),
     Follow(),
     Profile(),
