@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insta/widgets/signInForm.dart';
+import 'package:insta/screens/fire_test.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class SignInState extends State<SignIn> {
         child: Stack(
           children: <Widget>[
             SignInForm(),
+            FireTest(),
             _goToSignUpPageBtn(context),
           ],
         ),
