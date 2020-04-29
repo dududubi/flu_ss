@@ -16,7 +16,15 @@ class SignInState extends State<SignIn> {
         child: Stack(
           children: <Widget>[
             SignInForm(),
-            FireTest(),
+            Row(
+              children: <Widget>[
+              FireTest(),
+              Spacer(),
+              FireStorage(),
+              Spacer(),
+              FireStorage2(),
+              ]
+            ),
             _goToSignUpPageBtn(context),
           ],
         ),
