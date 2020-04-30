@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:insta/screens/feed_page.dart';
 import 'package:insta/screens/profile.dart';
 import 'package:insta/screens/follow.dart';
-import 'package:insta/screens/camera.dart';
+import 'package:insta/screens/camera_page.dart';
 import 'package:insta/screens/search.dart';
 
 class MainPage extends StatefulWidget {
@@ -69,7 +69,7 @@ BottomNavigationBarItem _buildBottomNavigationBarItem({String activeIconPath, St
   void openCamera(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Camera()),
+      MaterialPageRoute(builder: (context) => CameraPage()),
     );
   }
 }

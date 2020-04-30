@@ -23,6 +23,7 @@ class SignInState extends State<SignIn> {
               FireStorage(),
               Spacer(),
               FireStorage2(),
+              Spacer(),
               ]
             ),
             _goToSignUpPageBtn(context),

@@ -57,29 +57,13 @@ class FeedPageState extends State<FeedPage> {
     return Column(
       children: <Widget>[
         _feedHeader(record),
+        _feedContent(record),
         _feedImage(record),
         _feedAction(record),
         _feedLikes(record),
         _feedCaption(context, record),
       ],
     );
-    /*
-    Padding(
-      key: ValueKey(record.name),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey),
-          borderRadius: BorderRadius.circular(5.0),
-        ),
-        child: ListTile(
-          title: Text(record.name),
-          trailing: Text(record.content.toString()),
-          onTap: () => record.reference.updateData({'votes': FieldValue.increment(1)})
-        ),
-      ),
-    );
-    */
   }
   Widget _iconButton(onPressed, imageUrl, color) {
     return IconButton(
@@ -108,6 +92,25 @@ class FeedPageState extends State<FeedPage> {
           ),
           onPressed: null,
         )
+      ],
+    );
+  }
+  Widget _feedContent(Record record) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        SizedBox(width: 15.0),
+        RichText(
+          textAlign: TextAlign.left,
+          text: TextSpan(
+            style: DefaultTextStyle.of(context).style,
+            children: <TextSpan>[
+              TextSpan(
+                text: record.content,
+              ),
+            ]
+          ),
+        ),
       ],
     );
   }
