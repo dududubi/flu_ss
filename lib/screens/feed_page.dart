@@ -6,6 +6,8 @@ import 'package:insta/widgets/comment.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cache_image/cache_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:insta/firebase_provider.dart';
+import 'package:provider/provider.dart';
 
 class FeedPage extends StatefulWidget {
  @override
@@ -15,8 +17,10 @@ class FeedPage extends StatefulWidget {
 }
 
 class FeedPageState extends State<FeedPage> {
+  FirebaseProvider fp;
   @override
   Widget build(BuildContext context) {
+    fp = Provider.of<FirebaseProvider>(context);
     return Scaffold(
       appBar: AppBar(
         leading:
@@ -28,6 +32,10 @@ class FeedPageState extends State<FeedPage> {
         actions: <Widget>[
           _iconButton(null, 'assets/actionbar_igtv.png', Colors.black87),
           _iconButton(null, 'assets/direct_message.png', Colors.black87),
+          _iconButton(() {
+            fp.signOut();
+          }
+          , 'assets/logout.png', Colors.black87),
         ],
       ),
       body: _buildBody(context)

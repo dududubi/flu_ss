@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:insta/widgets/signInForm.dart';
 import 'package:insta/screens/fire_test.dart';
+import 'package:insta/screens/signup_page.dart';
 
 class SignIn extends StatefulWidget {
   @override
@@ -24,6 +25,7 @@ class SignInState extends State<SignIn> {
               Spacer(),
               FireStorage2(),
               Spacer(),
+              FireAuth(),
               ]
             ),
             _goToSignUpPageBtn(context),
@@ -45,7 +47,9 @@ Positioned _goToSignUpPageBtn(BuildContext context) {
             color: Colors.grey[300],
           ),
         ),
-        onPressed: null,
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => SignUpPage()));
+        },
         child: RichText(
           textAlign: TextAlign.center,
           text: TextSpan(style: TextStyle(), children: <TextSpan>[

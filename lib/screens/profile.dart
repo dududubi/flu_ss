@@ -3,6 +3,8 @@ import 'package:insta/constants/size.dart';
 import 'package:insta/utils/profile_image_parser.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:insta/widgets/profile_side_menu.dart';
+import 'package:insta/firebase_provider.dart';
+import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -15,10 +17,11 @@ class ProfileState extends State<Profile> {
   double menuWidth;              // 메뉴가로길이
   int duration = 200;            // 사이드 메뉴가 열리고닫힐 시간
   AlignmentGeometry tabAlign = Alignment.centerLeft;
-  
+  FirebaseProvider fp;
 
   @override
   Widget build(BuildContext context) {
+    fp = Provider.of<FirebaseProvider>(context);
     _size = MediaQuery.of(context).size;
     menuWidth = _size.width / 1.5;
     return Scaffold(
@@ -48,7 +51,7 @@ class ProfileState extends State<Profile> {
               FlatButton(
                 onPressed: null,
                 child: Text(
-                  'userName',
+                  fp.getUser().displayName,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20.0,
@@ -87,7 +90,7 @@ class ProfileState extends State<Profile> {
           child: Padding(
             padding: const EdgeInsets.only(left: common_gap),
             child: Text(
-              'userName',
+              fp.getUser().email,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20.0,
@@ -186,7 +189,7 @@ class ProfileState extends State<Profile> {
     return Padding(
       padding: const EdgeInsets.only(left: common_gap),
       child: Text(
-        'userName',
+        fp.getUser().displayName,
         style: TextStyle(fontWeight: FontWeight.bold),
       ),
     );

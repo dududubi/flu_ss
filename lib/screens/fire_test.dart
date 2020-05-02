@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:math';
+import 'package:insta/screens/auth_page.dart';
 class FireTest extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -61,6 +62,28 @@ class FireStorage2 extends StatelessWidget {
       },
       child: Text(
         'TEST3',
+        style: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+      color: Colors.blue,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6),
+      ),
+      disabledColor: Colors.blue[100],
+    );
+  }
+}
+class FireAuth extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return FlatButton(
+      onPressed: () {
+        final route = MaterialPageRoute(builder: (context) => LoginTest());
+        Navigator.push(context, route);
+      },
+      child: Text(
+        'TEST4',
         style: TextStyle(
           color: Colors.white,
         ),
@@ -394,5 +417,39 @@ class _LoadFirbaseStorageImageState extends State<LoadFirbaseStorageImage> {
     });
 
     return m;
+  }
+}
+
+class LoginTest extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Flutter Firebase")),
+      body: ListView(
+        children: <Widget>[
+          ListTile(
+            title: Text("Google Sign-In Demo"),
+            subtitle: Text("google_sign_in Plugin"),
+            onTap: () {
+              /*
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => GoogleSignInDemo()));
+              */
+            },
+          ),
+          ListTile(
+            title: Text("Firebase Auth"),
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => AuthPage()));
+            },
+          )
+        ].map((child) {
+          return Card(
+            child: child,
+          );
+        }).toList(),
+      ),
+    );
   }
 }
