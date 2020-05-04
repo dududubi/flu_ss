@@ -14,7 +14,7 @@ class Comment extends StatelessWidget {
     this.showProfile = false,
     this.dateTime,
     @required this.caption,
-  });
+  }); 
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -47,7 +47,7 @@ class Comment extends StatelessWidget {
                       ),
                       TextSpan(text: '  '),
                       TextSpan(
-                          text: '아~~~~~~~심심하다~~~~~~~~~~~~~~~휴~~길게~~~길게~~~~~'),
+                          text: caption),
                     ]),
               ),
               SizedBox(
