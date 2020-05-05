@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:insta/data/model.dart';
 import 'package:insta/widgets/comment.dart';
 import 'package:insta/constants/size.dart';
+import 'package:insta/utils/design.dart';
 
 class CommentPage extends StatefulWidget {
   final Record record; 
@@ -30,18 +31,15 @@ class CommentPageState extends State<CommentPage> {
         ),
       body: Column(
         children: <Widget>[
-          _buildBody(context, widget.record),
-          SizedBox(height: 15.0),
           Padding(
             padding: EdgeInsets.all(12),
             child : TextField(
                 controller : myController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: '댓글을 입력하세요.',
-                )
+                decoration: getTextFieldDeco('댓글을 입력하세요.', Icon(Icons.chat_bubble)),
               ),
           ),
+          SizedBox(height: 15.0),
+          _buildBody(context, widget.record),
         ]
       ),
       floatingActionButton: FloatingActionButton.extended(
@@ -65,7 +63,7 @@ class CommentPageState extends State<CommentPage> {
     return Padding(
       padding: EdgeInsets.only(left: common_gap),
       child : StreamBuilder<QuerySnapshot>(
-        stream: record.reference.collection("comments").orderBy("timestamp", descending: true).snapshots(),
+        stream: record.reference.collection("comments").orderBy("timestamp", descending: false).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LinearProgressIndicator();
           return _buildCommentList(context, snapshot.data.documents);
@@ -108,6 +106,7 @@ class CommentPageState extends State<CommentPage> {
       'timestamp': DateTime.now(),
     });
     myController.clear();
+    FocusScope.of(context).requestFocus(FocusNode()); // 키보드 감춤
     _scaffoldKey.currentState.hideCurrentSnackBar();
   }
 }

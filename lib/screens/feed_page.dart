@@ -29,7 +29,7 @@ class FeedPageState extends State<FeedPage> {
         leading:
             _iconButton(null, 'assets/actionbar_camera.png', Colors.black87),
         title: Image.asset(
-          'assets/insta_text_logo.png',
+          'assets/beensta_text_logo.png',
           height: 26,
         ),
         actions: <Widget>[

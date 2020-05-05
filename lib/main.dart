@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
             create: (_) => FirebaseProvider())
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Beenstagram',
         theme: ThemeData(
           primarySwatch: white,
         ),

@@ -1,45 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:insta/firebase_provider.dart';
 import 'package:insta/screens/signup_page.dart';
-import 'package:insta/screens/fire_test.dart';
+import 'package:insta/utils/design.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-SignInPageState pageState;
-
-class SignInPage extends StatefulWidget {
-  @override
-  SignInPageState createState() {
-    pageState = SignInPageState();
-    return pageState;
-  }
-}
-
-class SignInPageState extends State<SignInPage> {
-    @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            SignForm(),
-            Row(
-              children: <Widget>[
-              FireTest(),
-              Spacer(),
-              FireStorage(),
-              Spacer(),
-              FireStorage2(),
-              Spacer(),
-              FireAuth(),
-              ]
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
 class SignForm extends StatefulWidget {
   @override
@@ -77,41 +41,18 @@ class SignFormState extends State<SignForm> {
       key: _scaffoldKey,
       body: ListView(
         children: <Widget>[
-          
-          Row(
-            children: <Widget>[
-            FireTest(),
-            Spacer(),
-            FireStorage(),
-            Spacer(),
-            FireStorage2(),
-            Spacer(),
-            FireAuth(),
-            ]
-          ),
-          SizedBox(height: 50.0),
-          Spacer(flex: 30),
-          Image.asset('assets/insta_text_logo.png'),  // instagram 로고
           Container(
-            margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
+            margin: const EdgeInsets.only(left: 20, right: 20),
+            child: Image.asset(
+              'assets/beensta_text.png',
+              color: Color.fromRGBO(255, 255, 255, 0.3),
+              colorBlendMode: BlendMode.modulate
+            ),  
+          ),
+          Container(
+            margin: const EdgeInsets.only(left: 20, right: 20),
             child: Column(
               children: <Widget>[
-                //Header
-                /*
-                Container(
-                  height: 50,
-                  decoration: BoxDecoration(color: Colors.amber),
-                  child: Center(
-                    child: Text(
-                      "Sign In to Your Account",
-                      style: TextStyle(
-                          color: Colors.blueGrey,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ),
-                */
                 // Input Area
                 Container(
                   child: Column(
@@ -172,7 +113,7 @@ class SignFormState extends State<SignForm> {
                         ),
                       ),
                       RaisedButton(
-                        color: Colors.lightBlue[400],
+                        color: Colors.lightBlue[100],
                         textColor: Colors.white,
                         child: Text("Resend Verify Email"),
                         onPressed: () {
@@ -190,7 +131,7 @@ class SignFormState extends State<SignForm> {
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: RaisedButton(
-              color: Colors.blue,
+              color: Colors.blue[300],
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(6),
               ),
@@ -210,7 +151,7 @@ class SignFormState extends State<SignForm> {
           
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            padding: const EdgeInsets.only(top: 50),
+            padding: const EdgeInsets.only(top: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -219,7 +160,7 @@ class SignFormState extends State<SignForm> {
                 FlatButton(
                   child: Text(
                     "Sign Up",
-                    style: TextStyle(color: Colors.blue, fontSize: 16),
+                    style: TextStyle(color: Colors.blue[300], fontSize: 16),
                   ),
                   onPressed: () {
                     Navigator.push(context,
@@ -289,22 +230,5 @@ class SignFormState extends State<SignForm> {
           onPressed: () {},
         ),
       ));
-  }
-  
-  InputDecoration getTextFieldDeco(String hint, Icon icon) {
-    return InputDecoration(
-      hintText: hint,
-      prefixIcon: icon,
-      enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.grey[300], width: 1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.grey[300], width: 1),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      fillColor: Colors.grey[100],
-      filled: true,
-    );
   }
 }
