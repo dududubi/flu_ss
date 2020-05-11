@@ -40,10 +40,12 @@ dependencies:
   logger: ^0.7.0+2
   transparent_image : any
 
+
 dev_dependencies:
+  flutter_launcher_icons: "^0.7.3"
+
   flutter_test:
     sdk: flutter
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

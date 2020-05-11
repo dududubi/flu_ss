@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:insta/constants/size.dart';
-import 'package:insta/utils/profile_image_parser.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:insta/widgets/profile_side_menu.dart';
 import 'package:insta/firebase_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:cache_image/cache_image.dart';
+import 'package:insta/screens/profile_edit.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:insta/data/model.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -128,33 +130,49 @@ class ProfileState extends State<Profile> {
       ),
     );
   }
-  Row _header() {
-    return Row(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(common_gap),
-          child: CircleAvatar(
-            radius: 40,
-            backgroundImage: NetworkImage(getProfileImgPath('userName')),
-          ),
-        ),
-        Expanded(
-          child: Table(
-            children: [
-              TableRow(children: [
-                _getStatusValue('473'),
-                _getStatusValue('8k'),
-                _getStatusValue('45k'),
-              ]),
-              TableRow(children: [
-                _getStatusLabel('Posts'),
-                _getStatusLabel('Followers'),
-                _getStatusLabel('Following'),
-              ])
+  StreamBuilder _header() {
+    return StreamBuilder(
+      stream: Firestore.instance
+          .collection('feed')
+          .where("email", isEqualTo: fp.getUser().email)
+          .orderBy("timestamp", descending: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey)));
+        } else {
+          List<DocumentSnapshot> snapshots =snapshot.data.documents;
+          final record = Record.fromSnapshot(snapshots[0]);
+          return Row(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(common_gap),
+                child: CircleAvatar(
+                  radius: 40,
+                  backgroundImage: fp.getUser().photoUrl == null ? null : CacheImage(fp.getUser().photoUrl),
+                ),
+              ),
+              Expanded(
+                child: Table(
+                  children: [
+                    TableRow(children: [
+                      _getStatusValue(snapshot.data.documents.length.toString()),
+                      _getStatusValue('0'),
+                      _getStatusValue(record.timestamp.toDate().toString().substring(0, 10)),
+                    ]),
+                    TableRow(children: [
+                      _getStatusLabel('Photos'),
+                      _getStatusLabel('Posts'),
+                      _getStatusLabel('Last Photo'),
+                    ])
+                  ],
+                ),
+              )
             ],
-          ),
-        )
-      ],
+          );
+        }
+      },
     );
   }
   Center _getStatusValue(String value) => Center(
@@ -213,7 +231,13 @@ class ProfileState extends State<Profile> {
         child: Container(
           color: Colors.white,
           child: OutlineButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context,
+              MaterialPageRoute(
+                builder: (context) => ProfileEdit() 
+              ),
+            );
+            },
             borderSide: BorderSide(color: Colors.black45),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(6),
@@ -300,26 +324,44 @@ class ProfileState extends State<Profile> {
             ),
             duration: Duration(milliseconds: duration),
             curve: Curves.linear,
-            child: _imageGrid(),
+            child: null//_imageGrid(),
           ),
         ],
       ),
     );
   }
-  GridView _imageGrid() {
-    return GridView.count(
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      crossAxisCount: 3,
-      childAspectRatio: 1,
-      children: List.generate(30, (index) => _gridImgItem(index)),
+  StreamBuilder _imageGrid() {
+    return StreamBuilder(
+      stream: Firestore.instance
+          .collection('feed')
+          .where("email", isEqualTo: fp.getUser().email)
+          .orderBy("timestamp", descending: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey)));
+        } else {
+          return GridView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+            itemBuilder: (BuildContext context, int index) {
+              List<DocumentSnapshot> snapshots =snapshot.data.documents;
+              return _gridImgItem(snapshots[index]);
+            },
+            itemCount: snapshot.data.documents.length,
+          );
+        }
+      },
     );
   }
-
-  CachedNetworkImage _gridImgItem(int index) {
-    return CachedNetworkImage(
+  Image _gridImgItem(DocumentSnapshot data) {
+    final record = Record.fromSnapshot(data);
+    return Image(
       fit: BoxFit.cover,
-      imageUrl: "https://picsum.photos/id/$index/100/100",
+      image: CacheImage('gs://insta-1e04b.appspot.com/'+record.image),
     );
   }
 }

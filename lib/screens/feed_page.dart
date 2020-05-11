@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:insta/utils/profile_image_parser.dart';
 import 'package:insta/constants/size.dart';
 import 'package:insta/widgets/comment.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cache_image/cache_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:insta/firebase_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:insta/data/model.dart';
 import 'package:insta/screens/comment_page.dart';
 
@@ -64,15 +60,22 @@ class FeedPageState extends State<FeedPage> {
 
   Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
     final record = Record.fromSnapshot(data);
-    logger.d(record.reference.collection("comments").orderBy("timestamp", descending: true).snapshots().toString());
     return Column(
       children: <Widget>[
         _feedHeader(record),
         _feedContent(record),
+        SizedBox(height : 15.0),
         _feedImage(record),
         _feedAction(record),
         _feedLikes(record),
         _feedCaption(context, record),
+        Divider(
+            color: Colors.grey,
+            height: 10,
+            thickness: 1,
+            indent: 0,
+            endIndent: 0,
+          ),
       ],
     );
   }
@@ -91,7 +94,7 @@ class FeedPageState extends State<FeedPage> {
         Padding(
           padding: const EdgeInsets.all(14.0),
           child: CircleAvatar(
-            backgroundImage: CacheImage('gs://insta-1e04b.appspot.com/IMG_2475.JPG'),
+            backgroundImage: record.photoUrl == null ? null : CacheImage(record.photoUrl),
             radius: 16,
           ),
         ),
@@ -127,7 +130,7 @@ class FeedPageState extends State<FeedPage> {
   }
   FadeInImage _feedImage(Record record){
     return FadeInImage(
-      placeholder: MemoryImage(kTransparentImage),
+      placeholder:  AssetImage('assets/loading_img.gif'),
       fit: BoxFit.cover,
       image: CacheImage('gs://insta-1e04b.appspot.com/'+record.image),
     );
@@ -176,7 +179,7 @@ class FeedPageState extends State<FeedPage> {
     return Padding(
       padding: EdgeInsets.only(left: common_gap),
       child : StreamBuilder<QuerySnapshot>(
-        stream: record.reference.collection("comments").orderBy("timestamp", descending: true).snapshots(),
+        stream: record.reference.collection("comments").orderBy("timestamp", descending: false).snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) return LinearProgressIndicator();
           return _buildCommentList(context, snapshot.data.documents);
@@ -196,9 +199,11 @@ class FeedPageState extends State<FeedPage> {
   Widget _buildCommentItem(BuildContext context, DocumentSnapshot data) {
     final comment = RecordComment.fromSnapshot(data);
     return Comment(
+      id : comment.id,
       userName : comment.name,
       showProfile: true,
       caption : comment.comment,
+      photoUrl: comment.photoUrl,
     );
   }
 }

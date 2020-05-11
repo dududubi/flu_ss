@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:io';
 import 'package:insta/firebase_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cache_image/cache_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 
-class CameraPage extends StatefulWidget {
+class ProfileEdit extends StatefulWidget {
   @override
-  _CameraPageState createState() => _CameraPageState();
+  _ProfileEditState createState() => _ProfileEditState();
 }
 
-class _CameraPageState extends State<CameraPage> {
+class _ProfileEditState extends State<ProfileEdit> {
   final Color yellow = Color(0xfffbc31b);
   final Color orange = Color(0xfffb6900);
   FirebaseProvider fp;
@@ -24,11 +26,13 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
+    myController.text = fp.getUser().displayName;
+    logger.d(fp.getUser().photoUrl);
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(
-          "새 게시물",
+          "프로필 수정",
           style: TextStyle(
             color: Colors.white,
             fontSize: 28,
@@ -90,7 +94,13 @@ class _CameraPageState extends State<CameraPage> {
                             left: 15.0, right: 15.0, top: 0.0),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(30.0),
-                          child:  (_image != null) ? Image.file(_image) : SizedBox(height: 15.0),
+                          child:  fp.getUser().photoUrl == null ? 
+                            ((_image != null) ? Image.file(_image) : SizedBox(height: 15.0) ) : 
+                            Image(
+                            fit: BoxFit.cover,
+                            image: CacheImage(fp.getUser().photoUrl),
+                          )
+                          //
                         )
                       ),
                     ],
@@ -101,7 +111,7 @@ class _CameraPageState extends State<CameraPage> {
                   controller : myController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: '내용',
+                    labelText: '사용자명',
                   )
                 ),
                 SizedBox(height: 15.0),
@@ -117,11 +127,10 @@ class _CameraPageState extends State<CameraPage> {
   void _uploadImageToStorage(ImageSource source) async {
     File image = await ImagePicker.pickImage(source: source);
     img.Image imageIemp = img.decodeImage(image.readAsBytesSync());
-    img.Image resizedImg = img.copyResize(imageIemp, width : 600);
+    img.Image resizedImg = img.copyResize(imageIemp, width : 300);
     Directory tempDir = await getTemporaryDirectory();
     File(tempDir.path+'temp.png').writeAsBytesSync(img.encodePng(resizedImg));
     image = File(tempDir.path+'temp.png');
-
     if (image == null) return;
     setState(() {
       _image = image;
@@ -177,14 +186,18 @@ class _CameraPageState extends State<CameraPage> {
     var imageId = new DateTime.now().millisecondsSinceEpoch;
     StorageUploadTask storageUploadTask = _firebaseStorage.ref().child(imageId.toString()).putFile(_image);
     await storageUploadTask.onComplete;
-    await Firestore.instance.collection("feed").add({
-      "name" : fp.getUser().displayName,
-      "content": myController.text,
-      "image": imageId.toString(),
-      'timestamp': DateTime.now(),
+
+    UserUpdateInfo userUpdateInfo = UserUpdateInfo();
+    userUpdateInfo.displayName = myController.text;
+    userUpdateInfo.photoUrl = 'gs://insta-1e04b.appspot.com/'+ imageId.toString();
+    await fp.getUser().updateProfile(userUpdateInfo);
+    await fp.getUser().reload();
+    await Firestore.instance.collection('users').document(fp.getUser().uid).setData({
+      'id': fp.getUser().uid,
       'email' : fp.getUser().email,
-      'photoUrl' : fp.getUser().photoUrl,
-      'like' : 0
+      'name': myController.text,
+      'photoUrl': 'gs://insta-1e04b.appspot.com/'+ imageId.toString(),
+      'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
     });
     _scaffoldKey.currentState.hideCurrentSnackBar();
   }

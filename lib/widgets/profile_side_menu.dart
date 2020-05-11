@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:insta/constants/size.dart';
+import 'package:insta/firebase_provider.dart';
+import 'package:provider/provider.dart';
 
  
 class ProfileSideMenu extends StatelessWidget {
+  FirebaseProvider fp;
   @override
   Widget build(BuildContext context) {
+    fp = Provider.of<FirebaseProvider>(context);
     return Container(
       decoration: BoxDecoration(
         border: Border(
@@ -29,7 +33,7 @@ class ProfileSideMenu extends StatelessWidget {
             height: 3,
           ),
           FlatButton.icon(
-            onPressed: () => print("TEST"),
+            onPressed: () => fp.signOut(),
             icon: Icon(Icons.exit_to_app),
             label: Text(
               'Log out',

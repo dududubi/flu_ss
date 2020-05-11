@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:insta/constants/size.dart';
-import 'package:insta/utils/profile_image_parser.dart';
 import 'package:intl/intl.dart';
+import 'package:cache_image/cache_image.dart';
  
 class Comment extends StatelessWidget {
+  final String id;
   final String userName;
   final bool showProfile;
   final DateTime dateTime;
   final String caption;
+  final String photoUrl;
  
   Comment({
+    @required this.id,
     @required this.userName,
     this.showProfile = false,
     this.dateTime,
     @required this.caption,
+    this.photoUrl,
   }); 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,7 @@ class Comment extends StatelessWidget {
         Visibility(
           visible: showProfile,
           child: CircleAvatar(
-            backgroundImage: NetworkImage(getProfileImgPath(userName)),
+            backgroundImage: photoUrl == null ? null : CacheImage(photoUrl),
             radius: profile_radius,
           ),
         ),

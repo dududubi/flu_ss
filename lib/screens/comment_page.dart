@@ -83,9 +83,11 @@ class CommentPageState extends State<CommentPage> {
   Widget _buildCommentItem(BuildContext context, DocumentSnapshot data) {
     final comment = RecordComment.fromSnapshot(data);
     return Comment(
+      id : comment.id,
       userName : comment.name,
       showProfile: true,
       caption : comment.comment,
+      photoUrl: comment.photoUrl,
     );
   }
   void _uploadComment() async {
@@ -101,7 +103,9 @@ class CommentPageState extends State<CommentPage> {
         ),
       ));
     await widget.record.reference.collection("comments").add({
+      "id" : fp.getUser().uid,
       "name" : fp.getUser().displayName,
+      "photoUrl" : fp.getUser().photoUrl,
       "comment": myController.text,
       'timestamp': DateTime.now(),
     });

@@ -4,6 +4,8 @@ class Record {
   final String content;
   final String image;
   final int like;
+  final String photoUrl;
+  final Timestamp timestamp;
   final DocumentReference reference;
   Record.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['name'] != null),
@@ -13,7 +15,9 @@ class Record {
         name = map['name'],
         content = map['content'],
         image = map['image'],
-        like = map['like']
+        like = map['like'],
+        photoUrl = map['photoUrl'],
+        timestamp = map['timestamp']
         ;
  
   Record.fromSnapshot(DocumentSnapshot snapshot)
@@ -25,15 +29,21 @@ class Record {
 }
 
 class RecordComment {
+  final String id;
   final String name;
   final String comment;
+  final String photoUrl;
+  final Timestamp timestamp;
   final DocumentReference reference;
 
   RecordComment.fromMap(Map<String, dynamic> map, {this.reference})
       : assert(map['name'] != null),
         assert(map['comment'] != null),
         name = map['name'],
-        comment = map['comment']
+        comment = map['comment'],
+        id = map['id'],
+        photoUrl = map['photoUrl'],
+        timestamp = map['timestamp']
         ;
 
   RecordComment.fromSnapshot(DocumentSnapshot snapshot)
