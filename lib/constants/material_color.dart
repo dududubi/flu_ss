@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
  
+const themeColor = Colors.blueGrey;
+const primaryColor = Colors.black54;
+const greyColor = Colors.white10;
+const greyColor2 = Colors.black38;
 const MaterialColor white = const MaterialColor(
   0xFFFFFFFF,
   <int, Color>{

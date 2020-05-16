@@ -30,7 +30,6 @@ class FeedPageState extends State<FeedPage> {
         ),
         actions: <Widget>[
           _iconButton(null, 'assets/actionbar_igtv.png', Colors.black87),
-          _iconButton(null, 'assets/direct_message.png', Colors.black87),
           _iconButton(() {
             fp.signOut();
           }
@@ -46,19 +45,19 @@ class FeedPageState extends State<FeedPage> {
       stream: Firestore.instance.collection('feed').orderBy("timestamp", descending: true).snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
-        return _buildList(context, snapshot.data.documents);
+        return ListView.builder(
+          padding: const EdgeInsets.only(top: 10.0),
+          shrinkWrap: true,
+          itemBuilder: (BuildContext context, int index) {
+            return _buildListItem(snapshot.data.documents[index]);
+          },
+          itemCount: snapshot.data.documents.length,
+        );
       },
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
-    return ListView(
-      padding: const EdgeInsets.only(top: 20.0),
-      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
-    );
-  }
-
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+  Widget _buildListItem(DocumentSnapshot data) {
     final record = Record.fromSnapshot(data);
     return Column(
       children: <Widget>[

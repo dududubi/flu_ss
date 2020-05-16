@@ -52,3 +52,25 @@ class RecordComment {
   @override
   String toString() => "Record<$name:$name$comment>";
 }
+
+class Users {
+  final String id;
+  final String name;
+  final String email;
+  final String photoUrl;
+  final DocumentReference reference;
+
+  Users.fromMap(Map<String, dynamic> map, {this.reference})
+      : assert(map['name'] != null),
+        id = map['id'],
+        name = map['name'],
+        email = map['email'],
+        photoUrl = map['photoUrl']
+        ;
+
+  Users.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data, reference: snapshot.reference);
+
+  @override
+  String toString() => "Record<$name:$email$photoUrl>";
+}

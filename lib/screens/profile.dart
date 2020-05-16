@@ -7,6 +7,7 @@ import 'package:cache_image/cache_image.dart';
 import 'package:insta/screens/profile_edit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:insta/data/model.dart';
+import 'package:insta/constants/material_color.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -340,7 +341,7 @@ class ProfileState extends State<Profile> {
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return Center(
-            child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Colors.blueGrey)));
+            child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(themeColor)));
         } else {
           return GridView.builder(
             physics: NeverScrollableScrollPhysics(),
@@ -348,8 +349,7 @@ class ProfileState extends State<Profile> {
             gridDelegate:
                 SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
             itemBuilder: (BuildContext context, int index) {
-              List<DocumentSnapshot> snapshots =snapshot.data.documents;
-              return _gridImgItem(snapshots[index]);
+              return _gridImgItem(snapshot.data.documents[index]);
             },
             itemCount: snapshot.data.documents.length,
           );
