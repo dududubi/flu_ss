@@ -13,12 +13,16 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:insta/firebase_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:cache_image/cache_image.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class Chat extends StatelessWidget {
   final String peerId;
+  final String peerName;
   final String peerAvatar;
+  final String peerToken;
 
-  Chat({Key key, @required this.peerId, @required this.peerAvatar}) : super(key: key);
+  Chat({Key key, @required this.peerId, @required this.peerName, @required this.peerAvatar, @required this.peerToken}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +36,9 @@ class Chat extends StatelessWidget {
       ),
       body: ChatScreen(
         peerId: peerId,
+        peerName: peerName,
         peerAvatar: peerAvatar,
+        peerToken: peerToken,
       ),
     );
   }
@@ -40,19 +46,23 @@ class Chat extends StatelessWidget {
 
 class ChatScreen extends StatefulWidget {
   final String peerId;
+  final String peerName;
   final String peerAvatar;
+  final String peerToken;
 
-  ChatScreen({Key key, @required this.peerId, @required this.peerAvatar}) : super(key: key);
+  ChatScreen({Key key, @required this.peerId, @required this.peerName, @required this.peerAvatar, @required this.peerToken}) : super(key: key);
 
   @override
-  State createState() => ChatScreenState(peerId: peerId, peerAvatar: peerAvatar);
+  State createState() => ChatScreenState(peerId: peerId, peerName: peerName, peerAvatar: peerAvatar, peerToken: peerToken);
 }
 
 class ChatScreenState extends State<ChatScreen> {
-  ChatScreenState({Key key, @required this.peerId, @required this.peerAvatar});
+  ChatScreenState({Key key, @required this.peerId,@required this.peerName, @required this.peerAvatar,  @required this.peerToken});
 
   String peerId;
+  String peerName;
   String peerAvatar;
+  String peerToken;
   String id;
 
   var listMessage;
@@ -67,6 +77,11 @@ class ChatScreenState extends State<ChatScreen> {
   final ScrollController listScrollController = ScrollController();
   final FocusNode focusNode = FocusNode();
   FirebaseProvider fp;
+
+  // Cloud Functions
+  final HttpsCallable sendFCM = CloudFunctions.instance
+      .getHttpsCallable(functionName: 'sendFCM') // 호출할 Cloud Functions 의 함수명
+        ..timeout = const Duration(seconds: 30); // 타임아웃 설정(옵션)
 
   @override
   void initState() {
@@ -164,6 +179,13 @@ class ChatScreenState extends State<ChatScreen> {
             'type': type
           },
         );
+        sendFCM.call(
+          <String, dynamic>{
+            "token": peerToken,
+            "title": peerName,
+            "body": content
+          },
+        );
       });
       listScrollController.animateTo(0.0, duration: Duration(milliseconds: 300), curve: Curves.easeOut);
     } else {
@@ -258,27 +280,12 @@ class ChatScreenState extends State<ChatScreen> {
               children: <Widget>[
                 isLastMessageLeft(index)
                     ? Material(
-                        child: CachedNetworkImage(
-                          placeholder: (context, url) => Container(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 1.0,
-                              valueColor: AlwaysStoppedAnimation<Color>(themeColor),
-                            ),
-                            width: 35.0,
-                            height: 35.0,
-                            padding: EdgeInsets.all(10.0),
-                          ),
-                          imageUrl: peerAvatar,
-                          width: 35.0,
-                          height: 35.0,
-                          fit: BoxFit.cover,
+                        child: CircleAvatar(
+                          radius: 20,
+                          backgroundImage: peerAvatar == null ? null : CacheImage(peerAvatar),
                         ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(18.0),
-                        ),
-                        clipBehavior: Clip.hardEdge,
                       )
-                    : Container(width: 35.0),
+                    : Container(width: 20.0),
                 document['type'] == 0
                     ? Container(
                         child: Text(

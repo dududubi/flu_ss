@@ -41,6 +41,8 @@ dependencies:
   transparent_image : any
   fluttertoast: ^4.0.0
   photo_view: any
+  firebase_messaging: ^6.0.15
+  cloud_functions: ^0.5.0
 
 
 dev_dependencies:

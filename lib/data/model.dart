@@ -58,6 +58,7 @@ class Users {
   final String name;
   final String email;
   final String photoUrl;
+  final String token;
   final DocumentReference reference;
 
   Users.fromMap(Map<String, dynamic> map, {this.reference})
@@ -65,7 +66,8 @@ class Users {
         id = map['id'],
         name = map['name'],
         email = map['email'],
-        photoUrl = map['photoUrl']
+        photoUrl = map['photoUrl'],
+        token = map['token']
         ;
 
   Users.fromSnapshot(DocumentSnapshot snapshot)

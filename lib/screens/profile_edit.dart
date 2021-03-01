@@ -127,7 +127,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   void _uploadImageToStorage(ImageSource source) async {
     File image = await ImagePicker.pickImage(source: source);
     img.Image imageIemp = img.decodeImage(image.readAsBytesSync());
-    img.Image resizedImg = img.copyResize(imageIemp, width : 300);
+    img.Image resizedImg = img.copyResize(imageIemp, width : 500);
     Directory tempDir = await getTemporaryDirectory();
     File(tempDir.path+'temp.png').writeAsBytesSync(img.encodePng(resizedImg));
     image = File(tempDir.path+'temp.png');
@@ -200,5 +200,6 @@ class _ProfileEditState extends State<ProfileEdit> {
       'createdAt': DateTime.now().millisecondsSinceEpoch.toString(),
     });
     _scaffoldKey.currentState.hideCurrentSnackBar();
+    Navigator.of(context).pop();
   }
 }

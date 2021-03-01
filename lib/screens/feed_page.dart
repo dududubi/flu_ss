@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:insta/constants/size.dart';
 import 'package:insta/widgets/comment.dart';
@@ -7,6 +8,8 @@ import 'package:insta/firebase_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:insta/data/model.dart';
 import 'package:insta/screens/comment_page.dart';
+import 'package:insta/test/fcm_test.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FeedPage extends StatefulWidget {
  @override
@@ -17,9 +20,50 @@ class FeedPage extends StatefulWidget {
 
 class FeedPageState extends State<FeedPage> {
   FirebaseProvider fp;
+  final FirebaseMessaging _fcm = FirebaseMessaging();
+  bool didUpdateUserInfo = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // FCM 수신 설정
+    _fcm.configure(
+      // 앱이 실행중일 경우
+      onMessage: (Map<String, dynamic> message) async {
+        print("onMessage: $message");
+        /*
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: ListTile(
+              title: Text(message["notification"]["title"]),
+              subtitle: Text(message["notification"]["body"]),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text("OK"),
+                onPressed: () => Navigator.of(context).pop(),
+              )
+            ],
+          ),
+        );
+        */
+      },
+      // 앱이 완전히 종료된 경우
+      onLaunch: (Map<String, dynamic> message) async {
+        print("onLaunch: $message");
+      },
+      // 앱이 닫혀있었으나 백그라운드로 동작중인 경우
+      onResume: (Map<String, dynamic> message) async {
+        print("onResume: $message");
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     fp = Provider.of<FirebaseProvider>(context);
+    if (didUpdateUserInfo == false) updateUserInfo();
     return Scaffold(
       appBar: AppBar(
         leading:
@@ -29,7 +73,13 @@ class FeedPageState extends State<FeedPage> {
           height: 26,
         ),
         actions: <Widget>[
-          _iconButton(null, 'assets/actionbar_igtv.png', Colors.black87),
+          _iconButton(() {
+            Navigator.push(context,
+              MaterialPageRoute(
+                builder: (context) => FcmFirstDemo() 
+              ),
+            );
+          }, 'assets/actionbar_igtv.png', Colors.black87),
           _iconButton(() {
             fp.signOut();
           }
@@ -204,5 +254,17 @@ class FeedPageState extends State<FeedPage> {
       caption : comment.comment,
       photoUrl: comment.photoUrl,
     );
+  }
+  void updateUserInfo() async {
+    String token = await _fcm.getToken();
+    if (token == null) return;
+    var user = Firestore.instance.collection("users").document(fp.getUser().uid);
+    await user.updateData({
+      "token": token,
+      "platform": Platform.operatingSystem
+    });
+    setState(() {
+      didUpdateUserInfo = true;
+    });
   }
 }

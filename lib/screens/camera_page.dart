@@ -117,7 +117,7 @@ class _CameraPageState extends State<CameraPage> {
   void _uploadImageToStorage(ImageSource source) async {
     File image = await ImagePicker.pickImage(source: source);
     img.Image imageIemp = img.decodeImage(image.readAsBytesSync());
-    img.Image resizedImg = img.copyResize(imageIemp, width : 600);
+    img.Image resizedImg = img.copyResize(imageIemp, width : 800);
     Directory tempDir = await getTemporaryDirectory();
     File(tempDir.path+'temp.png').writeAsBytesSync(img.encodePng(resizedImg));
     image = File(tempDir.path+'temp.png');
@@ -187,5 +187,6 @@ class _CameraPageState extends State<CameraPage> {
       'like' : 0
     });
     _scaffoldKey.currentState.hideCurrentSnackBar();
+    Navigator.of(context).pop();
   }
 }

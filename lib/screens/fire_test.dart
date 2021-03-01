@@ -182,7 +182,7 @@ class CloudStorageDemoState extends State<CloudStorageDemo> {
   File _image;
   //FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   //FirebaseUser _user;
-  FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  //FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
   String _profileImageURL = "";
 
   @override
@@ -253,7 +253,7 @@ class CloudStorageDemoState extends State<CloudStorageDemo> {
     setState(() {
       _image = image;
     });
-    StorageReference storageReference =_firebaseStorage.ref().child("insta/");
+    //StorageReference storageReference =_firebaseStorage.ref().child("insta/");
      // _firebaseStorage.ref().child("insta/");
     // 프로필 사진을 업로드할 경로와 파일명을 정의. 사용자의 uid를 이용하여 파일명의 중복 가능성 제거
     //StorageReference storageReference =

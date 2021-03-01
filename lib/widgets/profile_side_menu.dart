@@ -3,8 +3,13 @@ import 'package:insta/constants/size.dart';
 import 'package:insta/firebase_provider.dart';
 import 'package:provider/provider.dart';
 
- 
-class ProfileSideMenu extends StatelessWidget {
+ class ProfileSideMenu extends StatefulWidget {
+ @override
+ ProfileSideMenuState createState() {
+   return ProfileSideMenuState();
+ }
+}
+class ProfileSideMenuState extends State<ProfileSideMenu> {
   FirebaseProvider fp;
   @override
   Widget build(BuildContext context) {

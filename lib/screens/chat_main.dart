@@ -122,7 +122,9 @@ class ChatMainState extends State<ChatMain> {
                 MaterialPageRoute(
                     builder: (context) => Chat(
                           peerId: user.id,
+                          peerName: user.name,
                           peerAvatar: user.photoUrl,
+                          peerToken : user.token,
                         )));
           },
           color: greyColor2,
